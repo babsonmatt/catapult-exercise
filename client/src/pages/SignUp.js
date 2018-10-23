@@ -17,11 +17,13 @@ const SIGNUP_MUTATION = gql`
   }
 `;
 
-const isValidationError = e =>
+const getValidationErrors = e =>
   e.graphQLErrors.length > 0 &&
   e.graphQLErrors[0].extensions &&
   e.graphQLErrors[0].extensions.exception &&
-  e.graphQLErrors[0].extensions.exception.validationErrors;
+  e.graphQLErrors[0].extensions.exception.validationErrors
+    ? e.graphQLErrors[0].extensions.exception.validationErrors
+    : null;
 
 class SignUpPage extends React.Component {
   state = {
@@ -65,10 +67,14 @@ class SignUpPage extends React.Component {
                   localStorage.authToken = result.data.signup.token;
                   history.push('/home');
                 } catch (e) {
-                  console.log('e', e);
-                  if (isValidationError(e)) {
+                  const validationErrors = getValidationErrors(e);
+                  if (validationErrors) {
+                    // reduce over the validationErrors keys and set a single error
                     this.setState({
-                      error: 'Invalid Email and/or Password',
+                      error: Object.keys(validationErrors).reduce(
+                        (p, c) => validationErrors[c],
+                        '',
+                      ),
                     });
                   } else {
                     this.setState({
