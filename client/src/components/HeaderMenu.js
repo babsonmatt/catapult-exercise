@@ -37,26 +37,6 @@ class HeaderMenu extends React.Component {
                     <Link to="/signup">Sign Up</Link>
                   </Menu.Item>
                 )}
-                {loggedIn ? (
-                  <Menu.Item name="signout">
-                    <Link
-                      to="/signout"
-                      onClick={e => {
-                        const { history } = this.props;
-                        e.preventDefault();
-                        localStorage.removeItem('authToken');
-                        client.resetStore();
-                        history.push('/signin');
-                      }}
-                    >
-                      Sign Out
-                    </Link>
-                  </Menu.Item>
-                ) : (
-                  <Menu.Item name="signin">
-                    <Link to="/signin">Sign In</Link>
-                  </Menu.Item>
-                )}
                 {loggedIn && (
                   <Menu.Item name="home">
                     <Link to="/home">Home</Link>
@@ -65,11 +45,31 @@ class HeaderMenu extends React.Component {
                 <Menu.Item name="manage">
                   <Link to="/manage">Manage Users</Link>
                 </Menu.Item>
-                {data && (
-                  <Menu.Menu position="right">
+                <Menu.Menu position="right">
+                  {data && (
                     <Menu.Item>Hi, {data.currentUser.firstName}!</Menu.Item>
-                  </Menu.Menu>
-                )}
+                  )}
+                  {loggedIn ? (
+                    <Menu.Item name="signout">
+                      <Link
+                        to="/signout"
+                        onClick={e => {
+                          const { history } = this.props;
+                          e.preventDefault();
+                          localStorage.removeItem('authToken');
+                          client.resetStore();
+                          history.push('/signin');
+                        }}
+                      >
+                        Sign Out
+                      </Link>
+                    </Menu.Item>
+                  ) : (
+                    <Menu.Item name="signin">
+                      <Link to="/signin">Sign In</Link>
+                    </Menu.Item>
+                  )}
+                </Menu.Menu>
               </Menu>
               {this.props.children}
             </React.Fragment>
