@@ -18,6 +18,18 @@ const SIGNIN_MUTATION = gql`
   }
 `;
 
+const CURRENT_USER_QUERY = gql`
+  {
+    currentUser {
+      id
+      firstName
+      lastName
+      email
+      results
+    }
+  }
+`;
+
 const isValidationError = e =>
   e.graphQLErrors.length > 0 &&
   e.graphQLErrors[0].extensions &&
@@ -45,7 +57,17 @@ class SignInPage extends React.Component {
           display: 'flex',
         }}
       >
-        <Mutation mutation={SIGNIN_MUTATION}>
+        <Mutation
+          mutation={SIGNIN_MUTATION}
+          update={(cache, { data: { login } }) => {
+            cache.writeQuery({
+              query: CURRENT_USER_QUERY,
+              data: {
+                currentUser: login.currentUser,
+              },
+            });
+          }}
+        >
           {(signIn, { loading, error }) => (
             <Form
               error={this.state.error ? true : false}

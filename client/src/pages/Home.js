@@ -1,21 +1,40 @@
 import React from 'react';
-import { Button, Container, Form, Header } from 'semantic-ui-react';
+import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
+import { Container, Header } from 'semantic-ui-react';
+import UserChart from '../components/UserChart';
+
+const CURRENT_USER_QUERY = gql`
+  {
+    currentUser {
+      id
+      firstName
+      lastName
+      email
+      results
+    }
+  }
+`;
 
 const HomePage = () => (
-  <Container>
-    <Form>
-      <Header as="h1">Home</Header>
-      <Form.Field>
-        <label>Email</label>
-        <input placeholder="Email" />
-      </Form.Field>
-      <Form.Field>
-        <label>Password</label>
-        <input placeholder="Password" />
-      </Form.Field>
-      <Button type="submit">Sign In</Button>
-    </Form>
-  </Container>
+  <Query query={CURRENT_USER_QUERY}>
+    {({ loading, error, data }) => {
+      if (loading) return <p>Loading...</p>;
+      if (error) return <p>Error :(</p>;
+      const { currentUser } = data;
+      return (
+        <Container>
+          <Header as="h1">
+            Welcome, {currentUser.firstName} {currentUser.lastName}
+          </Header>
+          <UserChart
+            data={currentUser.results}
+            name={`${currentUser.firstName} ${currentUser.lastName}`}
+          />
+        </Container>
+      );
+    }}
+  </Query>
 );
 
 export default HomePage;

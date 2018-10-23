@@ -33,7 +33,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    me: User
+    currentUser: User
     user(id: ID!): User
     users(filter: String): [User]
   }
@@ -47,7 +47,7 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    me: async (root, args, context) => {
+    currentUser: async (root, args, context) => {
       if (!context.user) {
         throw new ForbiddenError('You need to be authenticated!');
       }
