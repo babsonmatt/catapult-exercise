@@ -32,9 +32,11 @@ class HeaderMenu extends React.Component {
           return (
             <React.Fragment>
               <Menu>
-                <Menu.Item name="signup">
-                  <Link to="/signup">Sign Up</Link>
-                </Menu.Item>
+                {!loggedIn && (
+                  <Menu.Item name="signup">
+                    <Link to="/signup">Sign Up</Link>
+                  </Menu.Item>
+                )}
                 {loggedIn ? (
                   <Menu.Item name="signout">
                     <Link
