@@ -1,14 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
-import ApolloClient from 'apollo-boost';
+import ApolloClient, { HttpLink, ApolloLink, concat } from 'apollo-boost';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+const httpLink = new HttpLink({ uri: 'http://localhost:4000' });
+const authMiddleware = new ApolloLink((operation, forward) => {
+  operation.setContext({
+    headers: {
+      authorization: localStorage.getItem('token') || null,
+    },
+  });
+
+  return forward(operation);
+});
+
 const client = new ApolloClient({
   uri: 'http://localhost:4000/',
+  link: concat(authMiddleware, httpLink),
 });
+// const client = new ApolloClient({
+//   uri: 'http://localhost:4000/',
+// });
 
 ReactDOM.render(
   <ApolloProvider client={client}>

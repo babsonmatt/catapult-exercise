@@ -5,7 +5,7 @@ import SignUpPage from './pages/SignUp';
 import SignInPage from './pages/SignIn';
 import ManagePage from './pages/Manage';
 import HomePage from './pages/Home';
-import UserPage from './pages/User';
+// import UserPage from './pages/User';
 
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';

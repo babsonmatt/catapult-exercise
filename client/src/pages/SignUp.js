@@ -91,7 +91,7 @@ class SignUpPage extends React.Component {
                 flexDirection: 'column',
               }}
             >
-              <Header as="h1">Sign In</Header>
+              <Header as="h1">Sign Up</Header>
               <Message error header="Woops!" content={this.state.error} />
               <Form.Field required>
                 <label>First Name</label>
@@ -127,7 +127,7 @@ class SignUpPage extends React.Component {
                 />
               </Form.Field>
               <Button type="submit" loading={loading}>
-                Sign In
+                Sign Up
               </Button>
             </Form>
           )}
