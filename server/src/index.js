@@ -93,7 +93,6 @@ const resolvers = {
           .required('Please enter your email address')
           .test('uniqueEmail', 'Email already exists!', async () => {
             const emailQuery = await knex('users')
-              .whereNull('deletedAt')
               .where('email', email)
               .select('email');
             return emailQuery.length === 0;
@@ -105,6 +104,8 @@ const resolvers = {
       });
 
       await validate(schema, { email, password, firstName, lastName });
+
+      debugger;
 
       const newUserId = await knex.transaction(async trx => {
         const userId = await knex('users')
