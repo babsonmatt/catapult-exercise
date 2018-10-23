@@ -2,6 +2,7 @@ import { ApolloServer, gql } from 'apollo-server';
 import * as yup from 'yup';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import eachDay from 'date-fns/each_day';
 import { knex } from './db';
 import { validate } from './helpers/validation';
 
@@ -40,17 +41,30 @@ const typeDefs = gql`
   type Mutation {
     login(email: String!, password: String!): Auth
     signup(input: SignupInput!): Auth
+    deleteUser(userId: ID!): Boolean
   }
 `;
 
 const resolvers = {
   Query: {
     users: async () => {
-      const users = await knex.select('*').from('users');
+      const users = await knex('users');
       return users;
     },
   },
   Mutation: {
+    deleteUser: async (root, { userId }, context) => {
+      await knex.transaction(async trx => {
+        await knex('users')
+          .transacting(trx)
+          .where('id', userId)
+          .del();
+        await knex('users_results')
+          .transacting(trx)
+          .where('id', userId)
+          .del();
+      });
+    },
     login: async (root, { email, password }, context) => {
       const loginUser = await knex('users')
         .where('email', email)
@@ -105,8 +119,6 @@ const resolvers = {
 
       await validate(schema, { email, password, firstName, lastName });
 
-      debugger;
-
       const newUserId = await knex.transaction(async trx => {
         const userId = await knex('users')
           .transacting(trx)
@@ -116,6 +128,19 @@ const resolvers = {
             email,
             password: await bcrypt.hash(password, 10),
           });
+
+        // generate some user result data
+        const result = eachDay(new Date(2018, 8, 1), new Date(2018, 8, 30));
+        const userResults = result.map(date => ({
+          userId,
+          timestamp: date.getTime() / 1000,
+          result: Math.floor(Math.random() * (40 - 15)) + 15,
+        }));
+
+        await knex('users_results')
+          .transacting(trx)
+          .insert(userResults);
+
         return userId;
       });
 
