@@ -3,17 +3,21 @@ import * as yup from 'yup';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import eachDay from 'date-fns/each_day';
+import GraphQLJSON from 'graphql-type-json';
 import { knex } from './db';
 import { validate } from './helpers/validation';
 
 const secret = 'secret';
 
 const typeDefs = gql`
+  scalar JSON
+
   type User {
     id: ID!
     firstName: String!
     lastName: String!
     email: String!
+    results: JSON
   }
 
   type Auth {
@@ -50,6 +54,13 @@ const resolvers = {
     users: async () => {
       const users = await knex('users');
       return users;
+    },
+  },
+  User: {
+    results: async user => {
+      return knex('users_results')
+        .select('timestamp', 'result')
+        .where('userId', user.id);
     },
   },
   Mutation: {

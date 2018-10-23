@@ -1,20 +1,37 @@
 import React from 'react';
-import { Button, Container, Form, Header } from 'semantic-ui-react';
+import { Container, Header } from 'semantic-ui-react';
+
+import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
+
+const User = ({ userId }) => (
+  <Query
+    variables={{ userId: 1 }}
+    query={gql`
+      {
+        users {
+          id
+          firstName
+          lastName
+          email
+          results
+        }
+      }
+    `}
+  >
+    {({ loading, error, data }) => {
+      if (loading) return <p>Loading...</p>;
+      if (error) return <p>Error :(</p>;
+
+      return <div>hi</div>;
+    }}
+  </Query>
+);
 
 const UserPage = () => (
   <Container>
-    <Form>
-      <Header as="h1">Sign In</Header>
-      <Form.Field>
-        <label>Email</label>
-        <input placeholder="Email" />
-      </Form.Field>
-      <Form.Field>
-        <label>Password</label>
-        <input placeholder="Password" />
-      </Form.Field>
-      <Button type="submit">Sign In</Button>
-    </Form>
+    <Header>User XYZ</Header>
+    <User userId="1" />
   </Container>
 );
 
