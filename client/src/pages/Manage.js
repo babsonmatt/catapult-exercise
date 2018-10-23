@@ -7,7 +7,7 @@ import {
   Icon,
   Modal,
 } from 'semantic-ui-react';
-import { Query } from 'react-apollo';
+import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import UserChart from '../components/UserChart';
 
@@ -26,6 +26,68 @@ const UserChartModal = () => (
     </Modal.Content>
   </Modal>
 );
+
+const DELETE_USER_MUTATION = gql`
+  mutation DeleteUser($id: ID!) {
+    deleteUser(id: $id) {
+      id
+    }
+  }
+`;
+
+class DeleteUserButton extends React.Component {
+  state = {
+    open: false,
+  };
+
+  handleOpenModal = () => {
+    this.setState({ open: true });
+  };
+
+  handleCloseModal = () => {
+    this.setState({ open: false });
+  };
+
+  render() {
+    const { user } = this.props;
+    return (
+      <React.Fragment>
+        <Button size="mini" color="red" onClick={this.handleOpenModal} icon>
+          <Icon name="delete" />
+        </Button>
+        <Modal size="mini" open={this.state.open}>
+          <Modal.Header>
+            Delete {user.firstName} {user.lastName}?
+          </Modal.Header>
+          <Modal.Content>
+            <p>
+              Are you sure you want to delete {user.firstName} {user.lastName}?
+            </p>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button onClick={this.handleCloseModal} negative>
+              No
+            </Button>
+            <Mutation mutation={DELETE_USER_MUTATION}>
+              {(deleteUser, { data }) => (
+                <Button
+                  positive
+                  icon="checkmark"
+                  labelPosition="right"
+                  content="Yes"
+                  onClick={() => {
+                    deleteUser({ variables: { id: user.id } });
+                    this.handleCloseModal();
+                  }}
+                />
+              )}
+            </Mutation>
+          </Modal.Actions>
+        </Modal>
+      </React.Fragment>
+    );
+  }
+}
 
 const Users = () => (
   <Query
@@ -82,9 +144,7 @@ const Users = () => (
                       </Modal.Description>
                     </Modal.Content>
                   </Modal>
-                  <Button size="mini" color="red" icon>
-                    <Icon name="delete" />
-                  </Button>
+                  <DeleteUserButton user={user} />
                 </Table.Cell>
               </Table.Row>
             ))}

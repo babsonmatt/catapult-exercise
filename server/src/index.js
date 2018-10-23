@@ -40,7 +40,7 @@ const typeDefs = gql`
   type Mutation {
     login(email: String!, password: String!): Auth
     signup(input: SignupInput!): Auth
-    deleteUser(userId: ID!): Boolean
+    deleteUser(id: ID!): User
   }
 `;
 
@@ -65,17 +65,19 @@ const resolvers = {
     },
   },
   Mutation: {
-    deleteUser: async (root, { userId }, context) => {
+    deleteUser: async (root, { id }, context) => {
+      const user = await knex('users').where('id', id);
       await knex.transaction(async trx => {
         await knex('users')
           .transacting(trx)
-          .where('id', userId)
+          .where('id', id)
           .del();
         await knex('users_results')
           .transacting(trx)
-          .where('id', userId)
+          .where('userId', id)
           .del();
       });
+      return user;
     },
     login: async (root, { email, password }, context) => {
       const loginUser = await knex('users')
