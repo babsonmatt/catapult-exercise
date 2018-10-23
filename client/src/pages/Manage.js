@@ -158,10 +158,6 @@ class ManagePage extends React.Component {
     filter: null,
   };
 
-  handleFilterChange = e => {
-    this.setState({ filter: e.target.value });
-  };
-
   handleFilterChangeDebounced = debounce(filter => {
     this.setState({ filter });
   }, 300);
