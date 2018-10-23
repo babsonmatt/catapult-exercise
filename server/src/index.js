@@ -25,11 +25,6 @@ const typeDefs = gql`
     currentUser: User
   }
 
-  type Book {
-    title: String
-    author: String
-  }
-
   input SignupInput {
     email: String!
     password: String!
@@ -38,7 +33,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    books: [Book]
+    user(id: ID!): User
     users: [User]
   }
 
@@ -51,6 +46,12 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
+    user: async (root, { id }, context) => {
+      const user = await knex('users')
+        .where('id', parseInt(id, 10))
+        .first();
+      return user;
+    },
     users: async () => {
       const users = await knex('users');
       return users;
