@@ -34,7 +34,7 @@ const typeDefs = gql`
 
   type Query {
     user(id: ID!): User
-    users: [User]
+    users(filter: String): [User]
   }
 
   type Mutation {
@@ -52,8 +52,16 @@ const resolvers = {
         .first();
       return user;
     },
-    users: async () => {
-      const users = await knex('users');
+    users: async (root, { filter }, context) => {
+      console.log('filter', filter);
+      const q = knex('users');
+      if (filter) {
+        const strippedFilter = filter.replace(/%/g, '');
+        q.where('firstName', 'like', `%${strippedFilter}%`)
+          .orWhere('lastName', 'like', `%${strippedFilter}%`)
+          .orWhere('email', 'like', `%${strippedFilter}%`);
+      }
+      const users = await q;
       return users;
     },
   },

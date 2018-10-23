@@ -6,26 +6,12 @@ import {
   Table,
   Icon,
   Modal,
+  Input,
 } from 'semantic-ui-react';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+import debounce from 'lodash/debounce';
 import UserChart from '../components/UserChart';
-
-// const UserChartModal = () => (
-//   <Modal trigger={<Button>Show Modal</Button>}>
-//     <Modal.Header>Select a Photo</Modal.Header>
-//     <Modal.Content>
-//       <Modal.Description>
-//         <Header>Default Profile Image</Header>
-//         <p>
-//           We've found the following gravatar image associated with your e-mail
-//           address.
-//         </p>
-//         <p>Is it okay to use this photo?</p>
-//       </Modal.Description>
-//     </Modal.Content>
-//   </Modal>
-// );
 
 const DELETE_USER_MUTATION = gql`
   mutation DeleteUser($id: ID!) {
@@ -36,8 +22,8 @@ const DELETE_USER_MUTATION = gql`
 `;
 
 const GET_USERS_QUERY = gql`
-  {
-    users {
+  query($filter: String) {
+    users(filter: $filter) {
       id
       firstName
       lastName
@@ -81,6 +67,7 @@ class DeleteUserButton extends React.Component {
               No
             </Button>
             <Mutation
+              key={user.id}
               mutation={DELETE_USER_MUTATION}
               update={(cache, { data: { deleteUser } }) => {
                 const { users } = cache.readQuery({ query: GET_USERS_QUERY });
@@ -112,8 +99,8 @@ class DeleteUserButton extends React.Component {
   }
 }
 
-const Users = () => (
-  <Query query={GET_USERS_QUERY}>
+const UsersTable = ({ filter }) => (
+  <Query query={GET_USERS_QUERY} variables={{ filter }}>
     {({ loading, error, data }) => {
       if (loading) return <p>Loading...</p>;
       if (error) return <p>Error :(</p>;
@@ -166,11 +153,33 @@ const Users = () => (
   </Query>
 );
 
-const ManagePage = () => (
-  <Container>
-    <Header as="h1">Manage Users</Header>
-    <Users />
-  </Container>
-);
+class ManagePage extends React.Component {
+  state = {
+    filter: null,
+  };
+
+  handleFilterChange = e => {
+    this.setState({ filter: e.target.value });
+  };
+
+  handleFilterChangeDebounced = debounce(filter => {
+    this.setState({ filter });
+  }, 300);
+
+  render() {
+    const { filter } = this.state;
+    return (
+      <Container>
+        <Header as="h1">Manage Users</Header>
+        <Input
+          focus
+          placeholder="Search..."
+          onChange={e => this.handleFilterChangeDebounced(e.target.value)}
+        />
+        <UsersTable filter={filter} />
+      </Container>
+    );
+  }
+}
 
 export default ManagePage;
