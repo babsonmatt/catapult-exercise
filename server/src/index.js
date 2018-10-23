@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer, gql, ForbiddenError } from 'apollo-server';
 import * as yup from 'yup';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -33,6 +33,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    me: User
     user(id: ID!): User
     users(filter: String): [User]
   }
@@ -46,14 +47,22 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
+    me: async (root, args, context) => {
+      if (!context.user) {
+        throw new ForbiddenError('You need to be authenticated!');
+      }
+      const user = await knex('users')
+        .where('id', context.user.id)
+        .first();
+      return user;
+    },
     user: async (root, { id }, context) => {
       const user = await knex('users')
-        .where('id', parseInt(id, 10))
+        .where('id', id)
         .first();
       return user;
     },
     users: async (root, { filter }, context) => {
-      console.log('filter', filter);
       const q = knex('users');
       if (filter) {
         const strippedFilter = filter.replace(/%/g, '');
@@ -77,16 +86,16 @@ const resolvers = {
       const user = await knex('users')
         .where('id', id)
         .first();
-      // await knex.transaction(async trx => {
-      //   await knex('users')
-      //     .transacting(trx)
-      //     .where('id', id)
-      //     .del();
-      //   await knex('users_results')
-      //     .transacting(trx)
-      //     .where('userId', id)
-      //     .del();
-      // });
+      await knex.transaction(async trx => {
+        await knex('users')
+          .transacting(trx)
+          .where('id', id)
+          .del();
+        await knex('users_results')
+          .transacting(trx)
+          .where('userId', id)
+          .del();
+      });
       return user;
     },
     login: async (root, { email, password }, context) => {
@@ -180,7 +189,14 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const context = ({ req }) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const data = jwt.verify(token, 'secret');
+  const user = data.user;
+  return { user };
+};
+
+const server = new ApolloServer({ typeDefs, resolvers, context });
 
 server.listen().then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`);
