@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
+import { Menu } from 'semantic-ui-react';
 import SignUpPage from './pages/SignUp';
 import SignInPage from './pages/SignIn';
 import ManagePage from './pages/Manage';
@@ -18,7 +19,7 @@ class App extends React.Component {
           <Route exact path="/signup" component={SignUpPage} />
           <Route exact path="/home" component={HomePage} />
           <Route exact path="/manage" component={ManagePage} />
-          <Route exact path="/users/:id" component={UserPage} />
+          {/* <Route exact path="/users/:id" component={UserPage} /> */}
         </Switch>
       </Router>
     );

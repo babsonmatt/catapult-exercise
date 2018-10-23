@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import eachDay from 'date-fns/each_day';
-import GraphQLJSON from 'graphql-type-json';
+// import GraphQLJSON from 'graphql-type-json';
 import { knex } from './db';
 import { validate } from './helpers/validation';
 
@@ -98,11 +98,9 @@ const resolvers = {
         password: yup
           .string()
           .required('Please enter your password')
-          .min(8, 'Password must be at least 8 characters')
           .test('auth', 'Invalid Email and/or Password', async () => {
             if (!loginUser) return false;
             const auth = await bcrypt.compare(password, loginUser.password);
-            // if (!auth) throw new AuthenticationError('must authenticate');
             return auth;
           }),
         email: yup
