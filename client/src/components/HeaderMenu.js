@@ -55,9 +55,11 @@ class HeaderMenu extends React.Component {
                     <Link to="/signin">Sign In</Link>
                   </Menu.Item>
                 )}
-                <Menu.Item name="home">
-                  <Link to="/home">Home</Link>
-                </Menu.Item>
+                {loggedIn && (
+                  <Menu.Item name="home">
+                    <Link to="/home">Home</Link>
+                  </Menu.Item>
+                )}
                 <Menu.Item name="manage">
                   <Link to="/manage">Manage Users</Link>
                 </Menu.Item>
