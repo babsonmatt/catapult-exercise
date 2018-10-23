@@ -47,7 +47,7 @@ class DeleteUserButton extends React.Component {
   };
 
   render() {
-    const { user } = this.props;
+    const { user, filter } = this.props;
     return (
       <React.Fragment>
         <Button size="mini" color="red" onClick={this.handleOpenModal} icon>
@@ -70,9 +70,13 @@ class DeleteUserButton extends React.Component {
               key={user.id}
               mutation={DELETE_USER_MUTATION}
               update={(cache, { data: { deleteUser } }) => {
-                const { users } = cache.readQuery({ query: GET_USERS_QUERY });
+                const { users } = cache.readQuery({
+                  query: GET_USERS_QUERY,
+                  variables: { filter },
+                });
                 cache.writeQuery({
                   query: GET_USERS_QUERY,
+                  variables: { filter },
                   data: {
                     users: users.filter(user => user.id !== deleteUser.id),
                   },
@@ -142,7 +146,7 @@ const UsersTable = ({ filter }) => (
                       </Modal.Description>
                     </Modal.Content>
                   </Modal>
-                  <DeleteUserButton user={user} />
+                  <DeleteUserButton user={user} filter={filter} />
                 </Table.Cell>
               </Table.Row>
             ))}
