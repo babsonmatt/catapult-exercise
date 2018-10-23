@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Icon, Modal } from 'semantic-ui-react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -22,6 +23,11 @@ const GET_USERS_QUERY = gql`
 `;
 
 class DeleteUserButton extends React.Component {
+  static propTypes = {
+    user: PropTypes.object.isRequired,
+    filter: PropTypes.string,
+  };
+
   state = {
     open: false,
   };

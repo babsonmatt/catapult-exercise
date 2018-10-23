@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResponsiveLine } from '@nivo/line';
 import format from 'date-fns/format';
 
@@ -44,6 +45,11 @@ const UserChart = ({ data, name }) => {
       />
     </div>
   );
+};
+
+UserChart.propTypes = {
+  data: PropTypes.array.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default UserChart;

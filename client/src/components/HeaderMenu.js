@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { withRouter } from 'react-router';
@@ -18,6 +19,10 @@ const CURRENT_USER_QUERY = gql`
 const shouldSkip = () => !localStorage.getItem('authToken');
 
 class HeaderMenu extends React.Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+  };
+
   render() {
     return (
       <Query query={CURRENT_USER_QUERY} skip={shouldSkip()}>

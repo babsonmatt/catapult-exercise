@@ -1,13 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Table, Icon, Modal } from 'semantic-ui-react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import UserChart from '../../components/UserChart';
 import DeleteUserButton from './DeleteUserButton';
 import { userFragment } from '../../fragments/user';
-
-console.log(UserChart);
-console.log(DeleteUserButton);
 
 const GET_USERS_QUERY = gql`
   query($filter: String) {
@@ -71,5 +69,9 @@ const UserTable = ({ filter }) => (
     }}
   </Query>
 );
+
+UserTable.propTypes = {
+  filter: PropTypes.string,
+};
 
 export default UserTable;
