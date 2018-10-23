@@ -3,20 +3,18 @@ import { Button, Container, Form, Header, Message } from 'semantic-ui-react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { getValidationErrors } from '../helpers/validation';
+import { userFragment } from '../fragments/user';
 
 const SIGNUP_MUTATION = gql`
   mutation($input: SignupInput!) {
     signup(input: $input) {
       token
       currentUser {
-        id
-        firstName
-        lastName
-        email
-        results
+        ...User
       }
     }
   }
+  ${userFragment}
 `;
 
 class SignUpPage extends React.Component {
