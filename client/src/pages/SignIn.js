@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Container, Form, Header, Message } from 'semantic-ui-react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -27,6 +28,10 @@ const CURRENT_USER_QUERY = gql`
 `;
 
 class SignInPage extends React.Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+  };
+
   state = {
     email: '',
     password: '',
