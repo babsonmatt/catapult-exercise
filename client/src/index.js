@@ -10,7 +10,7 @@ const httpLink = new HttpLink({ uri: 'http://localhost:4000' });
 const authMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext({
     headers: {
-      authorization: localStorage.getItem('token') || null,
+      authorization: localStorage.getItem('authToken') || null,
     },
   });
 
@@ -21,9 +21,6 @@ const client = new ApolloClient({
   uri: 'http://localhost:4000/',
   link: concat(authMiddleware, httpLink),
 });
-// const client = new ApolloClient({
-//   uri: 'http://localhost:4000/',
-// });
 
 ReactDOM.render(
   <ApolloProvider client={client}>
