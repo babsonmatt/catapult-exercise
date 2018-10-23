@@ -190,10 +190,13 @@ const resolvers = {
 };
 
 const context = ({ req }) => {
-  const token = req.headers.authorization.split(' ')[1];
-  const data = jwt.verify(token, 'secret');
-  const user = data.user;
-  return { user };
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.split(' ')[1];
+    const data = jwt.verify(token, 'secret');
+    const user = data.user;
+    return { user };
+  }
+  return {};
 };
 
 const server = new ApolloServer({ typeDefs, resolvers, context });
