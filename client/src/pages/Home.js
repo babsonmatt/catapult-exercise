@@ -3,17 +3,15 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Container, Header } from 'semantic-ui-react';
 import UserChart from '../components/UserChart';
+import { userFragment } from '../fragments/user';
 
 const CURRENT_USER_QUERY = gql`
   {
     currentUser {
-      id
-      firstName
-      lastName
-      email
-      results
+      ...User
     }
   }
+  ${userFragment}
 `;
 
 const HomePage = () => (

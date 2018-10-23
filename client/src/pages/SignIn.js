@@ -2,32 +2,27 @@ import React from 'react';
 import { Button, Container, Form, Header, Message } from 'semantic-ui-react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+import { userFragment } from '../fragments/user';
 
 const SIGNIN_MUTATION = gql`
   mutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
       currentUser {
-        id
-        firstName
-        lastName
-        email
-        results
+        ...User
       }
     }
   }
+  ${userFragment}
 `;
 
 const CURRENT_USER_QUERY = gql`
   {
     currentUser {
-      id
-      firstName
-      lastName
-      email
-      results
+      ...User
     }
   }
+  ${userFragment}
 `;
 
 const isValidationError = e =>

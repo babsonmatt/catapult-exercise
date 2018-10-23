@@ -4,17 +4,15 @@ import gql from 'graphql-tag';
 import { withRouter } from 'react-router';
 import { Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { userFragment } from '../fragments/user';
 
 const CURRENT_USER_QUERY = gql`
   {
     currentUser {
-      id
-      firstName
-      lastName
-      email
-      results
+      ...User
     }
   }
+  ${userFragment}
 `;
 
 const shouldSkip = () => !localStorage.getItem('authToken');
