@@ -151,7 +151,7 @@ const resolvers = {
       await validate(schema, { email, password, firstName, lastName });
 
       const newUserId = await knex.transaction(async trx => {
-        const userId = await knex('users')
+        const [userId] = await knex('users')
           .transacting(trx)
           .insert({
             firstName,
@@ -176,7 +176,7 @@ const resolvers = {
       });
 
       const loginUser = {
-        id: newUserId[0],
+        id: newUserId,
         firstName,
         lastName,
         email,

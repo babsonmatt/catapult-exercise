@@ -12,6 +12,7 @@ const SIGNIN_MUTATION = gql`
         firstName
         lastName
         email
+        results
       }
     }
   }
