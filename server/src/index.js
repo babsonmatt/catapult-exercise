@@ -66,17 +66,19 @@ const resolvers = {
   },
   Mutation: {
     deleteUser: async (root, { id }, context) => {
-      const user = await knex('users').where('id', id);
-      await knex.transaction(async trx => {
-        await knex('users')
-          .transacting(trx)
-          .where('id', id)
-          .del();
-        await knex('users_results')
-          .transacting(trx)
-          .where('userId', id)
-          .del();
-      });
+      const user = await knex('users')
+        .where('id', id)
+        .first();
+      // await knex.transaction(async trx => {
+      //   await knex('users')
+      //     .transacting(trx)
+      //     .where('id', id)
+      //     .del();
+      //   await knex('users_results')
+      //     .transacting(trx)
+      //     .where('userId', id)
+      //     .del();
+      // });
       return user;
     },
     login: async (root, { email, password }, context) => {

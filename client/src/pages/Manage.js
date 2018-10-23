@@ -11,26 +11,38 @@ import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import UserChart from '../components/UserChart';
 
-const UserChartModal = () => (
-  <Modal trigger={<Button>Show Modal</Button>}>
-    <Modal.Header>Select a Photo</Modal.Header>
-    <Modal.Content>
-      <Modal.Description>
-        <Header>Default Profile Image</Header>
-        <p>
-          We've found the following gravatar image associated with your e-mail
-          address.
-        </p>
-        <p>Is it okay to use this photo?</p>
-      </Modal.Description>
-    </Modal.Content>
-  </Modal>
-);
+// const UserChartModal = () => (
+//   <Modal trigger={<Button>Show Modal</Button>}>
+//     <Modal.Header>Select a Photo</Modal.Header>
+//     <Modal.Content>
+//       <Modal.Description>
+//         <Header>Default Profile Image</Header>
+//         <p>
+//           We've found the following gravatar image associated with your e-mail
+//           address.
+//         </p>
+//         <p>Is it okay to use this photo?</p>
+//       </Modal.Description>
+//     </Modal.Content>
+//   </Modal>
+// );
 
 const DELETE_USER_MUTATION = gql`
   mutation DeleteUser($id: ID!) {
     deleteUser(id: $id) {
       id
+    }
+  }
+`;
+
+const GET_USERS_QUERY = gql`
+  {
+    users {
+      id
+      firstName
+      lastName
+      email
+      results
     }
   }
 `;
@@ -68,7 +80,18 @@ class DeleteUserButton extends React.Component {
             <Button onClick={this.handleCloseModal} negative>
               No
             </Button>
-            <Mutation mutation={DELETE_USER_MUTATION}>
+            <Mutation
+              mutation={DELETE_USER_MUTATION}
+              update={(cache, { data: { deleteUser } }) => {
+                const { users } = cache.readQuery({ query: GET_USERS_QUERY });
+                cache.writeQuery({
+                  query: GET_USERS_QUERY,
+                  data: {
+                    users: users.filter(user => user.id !== deleteUser.id),
+                  },
+                });
+              }}
+            >
               {(deleteUser, { data }) => (
                 <Button
                   positive
@@ -90,19 +113,7 @@ class DeleteUserButton extends React.Component {
 }
 
 const Users = () => (
-  <Query
-    query={gql`
-      {
-        users {
-          id
-          firstName
-          lastName
-          email
-          results
-        }
-      }
-    `}
-  >
+  <Query query={GET_USERS_QUERY}>
     {({ loading, error, data }) => {
       if (loading) return <p>Loading...</p>;
       if (error) return <p>Error :(</p>;
