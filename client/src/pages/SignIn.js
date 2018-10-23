@@ -53,7 +53,7 @@ class SignInPage extends React.Component {
     return (
       <Container
         style={{
-          height: '100vh',
+          height: '80vh',
           display: 'flex',
         }}
       >
@@ -121,7 +121,7 @@ class SignInPage extends React.Component {
                 />
               </Form.Field>
               <Button type="submit" loading={loading}>
-                Sign Up
+                Sign In
               </Button>
             </Form>
           )}

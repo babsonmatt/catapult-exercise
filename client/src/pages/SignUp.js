@@ -45,7 +45,7 @@ class SignUpPage extends React.Component {
     return (
       <Container
         style={{
-          height: '100vh',
+          height: '80vh',
           display: 'flex',
         }}
       >
