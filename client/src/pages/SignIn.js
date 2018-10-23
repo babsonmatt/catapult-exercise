@@ -3,6 +3,7 @@ import { Button, Container, Form, Header, Message } from 'semantic-ui-react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { userFragment } from '../fragments/user';
+import { isValidationError } from '../helpers/validation';
 
 const SIGNIN_MUTATION = gql`
   mutation($email: String!, $password: String!) {
@@ -24,12 +25,6 @@ const CURRENT_USER_QUERY = gql`
   }
   ${userFragment}
 `;
-
-const isValidationError = e =>
-  e.graphQLErrors.length > 0 &&
-  e.graphQLErrors[0].extensions &&
-  e.graphQLErrors[0].extensions.exception &&
-  e.graphQLErrors[0].extensions.exception.validationErrors;
 
 class SignInPage extends React.Component {
   state = {

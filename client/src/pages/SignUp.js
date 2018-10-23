@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Container, Form, Header, Message } from 'semantic-ui-react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+import { getValidationErrors } from '../helpers/validation';
 
 const SIGNUP_MUTATION = gql`
   mutation($input: SignupInput!) {
@@ -17,14 +18,6 @@ const SIGNUP_MUTATION = gql`
     }
   }
 `;
-
-const getValidationErrors = e =>
-  e.graphQLErrors.length > 0 &&
-  e.graphQLErrors[0].extensions &&
-  e.graphQLErrors[0].extensions.exception &&
-  e.graphQLErrors[0].extensions.exception.validationErrors
-    ? e.graphQLErrors[0].extensions.exception.validationErrors
-    : null;
 
 class SignUpPage extends React.Component {
   state = {
