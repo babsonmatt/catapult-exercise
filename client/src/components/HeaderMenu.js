@@ -26,7 +26,7 @@ class HeaderMenu extends React.Component {
         {({ client, loading, error, data }) => {
           let loggedIn = false;
           if (loading) return null;
-          if (error) return false;
+          if (error) return null;
           if (data) loggedIn = true;
 
           return (
@@ -61,6 +61,11 @@ class HeaderMenu extends React.Component {
                 <Menu.Item name="manage">
                   <Link to="/manage">Manage Users</Link>
                 </Menu.Item>
+                {data && (
+                  <Menu.Menu position="right">
+                    <Menu.Item>Hi, {data.currentUser.firstName}!</Menu.Item>
+                  </Menu.Menu>
+                )}
               </Menu>
               {this.props.children}
             </React.Fragment>
