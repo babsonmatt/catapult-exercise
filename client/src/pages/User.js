@@ -1,53 +1,8 @@
 import React from 'react';
 import { Container, Header } from 'semantic-ui-react';
-import { ResponsiveLine } from '@nivo/line';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import format from 'date-fns/format';
-
-const UserChart = ({ data, name }) => {
-  const formattedData = [
-    {
-      id: name,
-      data: data.map(d => ({
-        x: format(new Date(d.timestamp * 1000), 'MM/DD/YYYY'),
-        y: d.result,
-      })),
-    },
-  ];
-  return (
-    <div style={{ height: 300 }}>
-      <ResponsiveLine
-        data={formattedData}
-        minY="auto"
-        maxY="auto"
-        axisBottom={{
-          orient: 'bottom',
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: -45,
-          legendOffset: 36,
-          legendPosition: 'center',
-        }}
-        axisLeft={{
-          orient: 'left',
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: 'minutes',
-          legendOffset: -40,
-          legendPosition: 'center',
-        }}
-        margin={{
-          top: 20,
-          right: 20,
-          bottom: 60,
-          left: 80,
-        }}
-      />
-    </div>
-  );
-};
+import UserChart from '../components/UserChart';
 
 const User = ({ userId }) => (
   <Query
