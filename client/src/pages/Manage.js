@@ -12,6 +12,7 @@ import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import debounce from 'lodash/debounce';
 import UserChart from '../components/UserChart';
+import { userFragment } from '../fragments/user';
 
 const DELETE_USER_MUTATION = gql`
   mutation DeleteUser($id: ID!) {
@@ -24,13 +25,10 @@ const DELETE_USER_MUTATION = gql`
 const GET_USERS_QUERY = gql`
   query($filter: String) {
     users(filter: $filter) {
-      id
-      firstName
-      lastName
-      email
-      results
+      ...User
     }
   }
+  ${userFragment}
 `;
 
 class DeleteUserButton extends React.Component {
