@@ -38,10 +38,18 @@ const User = ({ userId }) => (
   </Query>
 );
 
-const UserPage = () => (
-  <Container>
-    <User userId="1" />
-  </Container>
-);
+const UserPage = props => {
+  const {
+    match: {
+      params: { id },
+    },
+  } = props;
+
+  return (
+    <Container>
+      <User userId={id} />
+    </Container>
+  );
+};
 
 export default UserPage;
