@@ -82,12 +82,49 @@ const resolvers = {
       return { token, currentUser: loginUser };
     },
     signup: async (root, { input }, context) => {
+      const { email, password, firstName, lastName } = input;
+
+      const schema = yup.object().shape({
+        firstName: yup.string().required('Please enter your first name'),
+        lastName: yup.string().required('Please enter your last name'),
+        email: yup
+          .string()
+          .email()
+          .required('Please enter your email address')
+          .test('uniqueEmail', 'Email already exists!', async () => {
+            const emailQuery = await knex('users')
+              .whereNull('deletedAt')
+              .where('email', email)
+              .select('email');
+            return emailQuery.length === 0;
+          }),
+        password: yup
+          .string()
+          .required('Please enter your password')
+          .min(8, 'Password must be at least 8 characters'),
+      });
+
+      await validate(schema, { email, password, firstName, lastName });
+
+      const newUserId = await knex.transaction(async trx => {
+        const userId = await knex('users')
+          .transacting(trx)
+          .insert({
+            firstName,
+            lastName,
+            email,
+            password: await bcrypt.hash(password, 10),
+          });
+        return userId;
+      });
+
       const loginUser = {
-        id: 1,
-        email: 'a@a.com',
-        firstName: 'matt',
-        lastName: 'd',
+        id: newUserId[0],
+        firstName,
+        lastName,
+        email,
       };
+
       const token = jwt.sign({ user: loginUser }, secret, { expiresIn: '24h' });
 
       return { token, currentUser: loginUser };
