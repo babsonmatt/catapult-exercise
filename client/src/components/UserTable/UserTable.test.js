@@ -170,7 +170,6 @@ describe('UserTable', () => {
     // verify the row has been removed from the user table (1 including header row)
     await wait(0);
     component.update();
-    console.log(component.html());
     expect(component.find(Table.Row).length).toBe(1);
   });
 });
