@@ -6,8 +6,8 @@ import gql from 'graphql-tag';
 import { getValidationErrors } from '../helpers/validation';
 import { userFragment } from '../fragments/user';
 
-const SIGNUP_MUTATION = gql`
-  mutation($input: SignupInput!) {
+export const SIGNUP_MUTATION = gql`
+  mutation signup($input: SignupInput!) {
     signup(input: $input) {
       token
       currentUser {
@@ -37,7 +37,6 @@ class SignUpPage extends React.Component {
 
   render() {
     const { history } = this.props;
-
     return (
       <Container
         style={{
@@ -61,10 +60,12 @@ class SignUpPage extends React.Component {
                       },
                     },
                   });
+
                   localStorage.authToken = result.data.signup.token;
                   history.push('/home');
                 } catch (e) {
                   const validationErrors = getValidationErrors(e);
+                  debugger;
                   if (validationErrors) {
                     // reduce over the validationErrors keys and set a single error
                     this.setState({
