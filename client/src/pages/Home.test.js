@@ -3,7 +3,6 @@ import Enzyme, { mount } from 'enzyme';
 import wait from 'waait';
 import Adapter from 'enzyme-adapter-react-16';
 import { MockedProvider } from 'react-apollo/test-utils';
-import { MemoryRouter, Route } from 'react-router-dom';
 import UserChart from '../components/UserChart';
 import HomePage, { CURRENT_USER_QUERY } from './Home';
 
