@@ -60,12 +60,10 @@ class SignUpPage extends React.Component {
                       },
                     },
                   });
-
                   localStorage.authToken = result.data.signup.token;
                   history.push('/home');
                 } catch (e) {
                   const validationErrors = getValidationErrors(e);
-                  debugger;
                   if (validationErrors) {
                     // reduce over the validationErrors keys and set a single error
                     this.setState({

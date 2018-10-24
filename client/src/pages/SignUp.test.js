@@ -24,7 +24,7 @@ describe('SignUpPage', () => {
     expect(enzymeWrapper.find('h1').text()).toBe('Sign Up');
   });
 
-  it('should render loading state initially', async () => {
+  it('submits the form without any errors', async () => {
     const mocks = [
       {
         request: {
@@ -48,9 +48,9 @@ describe('SignUpPage', () => {
                 lastName: 'lastname',
                 email: 'test@test.com',
                 results: [],
-                __typename: 'User'
+                __typename: 'User',
               },
-              __typename: 'Auth'
+              __typename: 'Auth',
             },
           },
         },
@@ -97,5 +97,112 @@ describe('SignUpPage', () => {
     await wait(0);
     expect(component.find(Form).length).toBe(1);
     expect(component.find(Form).prop('error')).toBe(false);
+  });
+
+  it('sets error state if there is an unknown error', async () => {
+    const mocks = [
+      {
+        request: {
+          query: SIGNUP_MUTATION,
+          variables: {
+            input: {
+              firstName: '',
+              lastName: '',
+              email: '',
+              password: '',
+            },
+          },
+        },
+        error: new Error('Woops!'),
+      },
+    ];
+
+    const component = mount(
+      <MockedProvider mocks={mocks} addTypename={true}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/signup' }]}
+          initialIndex={1}
+        >
+          <Route exact path="/signup" component={SignUpPage} />
+        </MemoryRouter>
+      </MockedProvider>,
+    );
+
+    component.find('button').simulate('submit');
+    await wait(10);
+    expect(component.find(SignUpPage).state('error')).not.toBe('');
+  });
+
+  it('sets error state if there is an error', async () => {
+    const mocks = [
+      {
+        request: {
+          query: SIGNUP_MUTATION,
+          variables: {
+            input: {
+              firstName: '',
+              lastName: 'lastname',
+              email: 'test@test.com',
+              password: 'password',
+            },
+          },
+        },
+        result: {
+          errors: [
+            {
+              extensions: {
+                code: 'BAD_USER_INPUT',
+                exception: {
+                  validationErrors: {
+                    firstName: 'Please enter your first name',
+                  },
+                },
+              },
+              message: 'Bad stuff!',
+              path: ['signup'],
+            },
+          ],
+          data: {
+            signup: null,
+          },
+        },
+      },
+    ];
+
+    const component = mount(
+      <MockedProvider mocks={mocks} addTypename={true}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/signup' }]}
+          initialIndex={1}
+        >
+          <Route exact path="/signup" component={SignUpPage} />
+        </MemoryRouter>
+      </MockedProvider>,
+    );
+
+    component
+      .find('input')
+      .at(1)
+      .simulate('change', {
+        target: { name: 'lastName', value: 'lastname' },
+      });
+    component
+      .find('input')
+      .at(2)
+      .simulate('change', {
+        target: { name: 'email', value: 'test@test.com' },
+      });
+    component
+      .find('input')
+      .at(3)
+      .simulate('change', {
+        target: { name: 'password', value: 'password' },
+      });
+
+    component.find('button').simulate('submit');
+    await wait(10);
+    expect(component.find(SignUpPage).state('error')).toBe(
+      'Please enter your first name',
+    );
   });
 });
