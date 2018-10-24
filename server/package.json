@@ -4,5 +4,16 @@
   "version": "0.1.0",
   "scripts": {
     "start": "node -r esm ./src/index.js"
+  },
+  "dependencies": {
+    "apollo-server": "^2.1.0",
+    "bcrypt": "^3.0.2",
+    "date-fns": "^1.29.0",
+    "esm": "^3.0.84",
+    "graphql": "^14.0.2",
+    "jsonwebtoken": "^8.3.0",
+    "knex": "^0.15.2",
+    "sqlite3": "^4.0.3",
+    "yup": "^0.26.6"
   }
 }

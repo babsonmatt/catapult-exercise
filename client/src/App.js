@@ -1,5 +1,10 @@
 import React from 'react';
-import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
+import {
+  Route,
+  Switch,
+  BrowserRouter as Router,
+  Redirect,
+} from 'react-router-dom';
 import SignUpPage from './pages/SignUp';
 import SignInPage from './pages/SignIn';
 import ManagePage from './pages/Manage';
@@ -16,6 +21,7 @@ class App extends React.Component {
         <React.Fragment>
           <Route component={HeaderMenu} />
           <Switch>
+            <Redirect exact from="/" to="/signin" />
             <Route exact path="/signin" component={SignInPage} />
             <Route exact path="/signup" component={SignUpPage} />
             <Route exact path="/home" component={HomePage} />
