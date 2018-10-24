@@ -7,7 +7,7 @@ import UserChart from '../../components/UserChart';
 import DeleteUserButton from './DeleteUserButton';
 import { userFragment } from '../../fragments/user';
 
-const GET_USERS_QUERY = gql`
+export const GET_USERS_QUERY = gql`
   query($filter: String) {
     users(filter: $filter) {
       ...User
@@ -21,6 +21,7 @@ const UserTable = ({ filter }) => (
     {({ loading, error, data }) => {
       if (loading) return <p>Loading...</p>;
       if (error) return <p>Error :(</p>;
+
 
       return (
         <Table celled striped>

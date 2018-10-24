@@ -5,7 +5,7 @@ import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { userFragment } from '../../fragments/user';
 
-const DELETE_USER_MUTATION = gql`
+export const DELETE_USER_MUTATION = gql`
   mutation DeleteUser($id: ID!) {
     deleteUser(id: $id) {
       id
