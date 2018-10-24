@@ -20,7 +20,7 @@ const HomePage = () => (
       if (loading) return <p>Loading...</p>;
       if (error) return <p>Error :(</p>;
       const { currentUser } = data;
-      console.log('data', data, loading);
+
       return (
         <Container>
           <Header as="h1">

@@ -7,7 +7,7 @@ import { Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { userFragment } from '../fragments/user';
 
-const CURRENT_USER_QUERY = gql`
+export const CURRENT_USER_QUERY = gql`
   {
     currentUser {
       ...User

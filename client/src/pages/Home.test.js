@@ -17,7 +17,7 @@ describe('HomePage', () => {
     );
   });
 
-  it.only('displays the correct welcome message and chart', async () => {
+  it('displays the correct welcome message and chart', async () => {
     const mocks = [
       {
         request: {
@@ -49,7 +49,8 @@ describe('HomePage', () => {
 
     expect(component.find('p').text()).toBe('Loading...');
     await wait(0);
+    component.update();
     expect(component.find(UserChart).exists()).toBe(true);
-    expect(component.find('h1').text()).toBe('test');
+    expect(component.find('h1').text()).toBe('Welcome, firstname lastname');
   });
 });
