@@ -6,7 +6,7 @@ import gql from 'graphql-tag';
 import { userFragment } from '../fragments/user';
 import { isValidationError } from '../helpers/validation';
 
-const SIGNIN_MUTATION = gql`
+export const SIGNIN_MUTATION = gql`
   mutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
