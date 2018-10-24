@@ -5,7 +5,7 @@ import { Container, Header } from 'semantic-ui-react';
 import UserChart from '../components/UserChart';
 import { userFragment } from '../fragments/user';
 
-const CURRENT_USER_QUERY = gql`
+export const CURRENT_USER_QUERY = gql`
   {
     currentUser {
       ...User
@@ -20,6 +20,7 @@ const HomePage = () => (
       if (loading) return <p>Loading...</p>;
       if (error) return <p>Error :(</p>;
       const { currentUser } = data;
+      console.log('data', data, loading);
       return (
         <Container>
           <Header as="h1">
